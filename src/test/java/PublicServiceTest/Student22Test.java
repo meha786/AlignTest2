@@ -118,5 +118,13 @@ public class Student22Test {
         Assert.assertEquals(200, res.getStatus());
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void getHigestEducation2() {
+        JSONObject education = new JSONObject();
+        Response res = publicFacing.getListOfHighestEducation();
+        Assert.assertEquals(education.toString(), res.getEntity());
+        Assert.assertEquals(200, res.getStatus());
+    }
    
 }
