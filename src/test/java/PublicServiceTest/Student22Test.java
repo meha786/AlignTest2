@@ -36,6 +36,7 @@ import org.mehaexample.asdDemo.model.alignprivate.WorkExperiences;
 import org.mehaexample.asdDemo.restModels.EmailToRegister;
 import org.mehaexample.asdDemo.restModels.ExtraExperienceObject;
 import org.mehaexample.asdDemo.restModels.PasswordChangeObject;
+import org.mehaexample.asdDemo.restModels.PasswordCreateObject;
 import org.mehaexample.asdDemo.restModels.PasswordResetObject;
 import org.mehaexample.asdDemo.restModels.ProjectObject;
 
@@ -55,6 +56,7 @@ public class Student22Test {
 	private static ProjectsDao projectsDao;
 	private static StudentLoginsDao studentLoginsDao;
 	private static ExtraExperiencesDao extraExperiencesDao;
+	private static PasswordCreateObject passwordCreateObject;
 
 
 	UndergraduatesPublicDao undergraduatesPublicDao = new UndergraduatesPublicDao(true);
@@ -71,6 +73,7 @@ public class Student22Test {
 		projectsDao = new ProjectsDao(true); 
 		studentLoginsDao = new StudentLoginsDao();
 		extraExperiencesDao = new ExtraExperiencesDao();
+		passwordCreateObject = new PasswordCreateObject();
 	}
 
 	@Before
@@ -141,6 +144,14 @@ public class Student22Test {
 	public void loginUser1(){
 		LoginObject loginObject = new LoginObject("test.alignstudent123@gmail.com", "mangograpes123");
 		Response  response = studentFacing.loginUser(null, loginObject);
+		
+		Assert.assertEquals(response.getEntity().toString(), "User doesn't exist: test.alignstudent123@gmail.com");
+	}
+	
+	@Test
+	public void logoutUser1(){
+		LoginObject loginObject = new LoginObject("test.alignstudent123@gmail.com", "mangograpes123");
+		Response  response = studentFacing.logoutUser(null, loginObject);
 		
 		Assert.assertEquals(response.getEntity().toString(), "User doesn't exist: test.alignstudent123@gmail.com");
 	}
@@ -225,6 +236,16 @@ public class Student22Test {
 //		Assert.assertEquals("Project deleted successfully", resp2.getEntity().toString());
 //	}
 
+//	@Test
+//	public void updatePrivaciesTest1(){
+//		EmailToRegister emailToRegister = new EmailToRegister("");
+//		Response res = studentFacing.sendRegistrationEmail(emailToRegister);
+//
+//		String response = (String) res.getEntity();
+//
+//		Assert.assertEquals("Email Id can't be null or empty" , response); 
+//	}
+	
 	@Test
 	public void addProjectTest2(){
 		String endDate = "2017-01-04";
@@ -412,5 +433,73 @@ public class Student22Test {
 
 		studentLoginsDao.deleteStudentLogin("tomcat3@gmail.com");
 	}
+	
+	@Test
+	public void createPassword1(){
+
+		StudentLogins studentLogins = new StudentLogins("tomcat3@gmail.com",
+				"password",
+				"key",
+				Timestamp.valueOf("2017-09-23 10:10:10.0"),
+				Timestamp.valueOf("2017-09-23 10:10:10.0"),
+				true);
+		studentLoginsDao.createStudentLogin(studentLogins);
+		
+		PasswordCreateObject passwordCreateObject = new
+				PasswordCreateObject("tomcat3@gmail.com", "password","key");
+
+		Response res = studentFacing.createPassword(passwordCreateObject);
+
+		String response = (String) res.getEntity();
+
+		Assert.assertEquals(" Registration key expired!" , response); 
+
+		studentLoginsDao.deleteStudentLogin("tomcat3@gmail.com");
+	}
+	
+	@Test
+	public void createPassword2(){
+		StudentLogins studentLogins = new StudentLogins("tomcat3@gmail.com",
+				"password",
+				"key",
+				Timestamp.valueOf("2017-09-23 10:10:10.0"),
+				Timestamp.valueOf("2017-09-23 10:10:10.0"),
+				true);
+		studentLoginsDao.createStudentLogin(studentLogins);
+		
+		PasswordCreateObject passwordCreateObject = new
+				PasswordCreateObject("tomcat3@gmail.com", "password","key");
+		passwordCreateObject.setEmail(null);
+
+		Response res = studentFacing.createPassword(passwordCreateObject);
+
+		String response = (String) res.getEntity();
+
+		Assert.assertEquals("Invalid Student details. Student does not exist" , response); 
+
+		studentLoginsDao.deleteStudentLogin("tomcat3@gmail.com");
+	}
+	
+//	@Test
+//	public void createPassword3(){
+//		StudentLogins studentLogins = new StudentLogins("tomcat@gmail.com",
+//				"password1",
+//				"key",
+//				Timestamp.valueOf("2017-09-23 10:10:10.0"),
+//				Timestamp.valueOf("2017-09-23 10:10:10.0"),
+//				true);
+//		studentLoginsDao.createStudentLogin(studentLogins);
+//		
+//		PasswordCreateObject passwordCreateObject = new
+//				PasswordCreateObject("tomcat@gmail.com", "password1", studentLogins.getRegistrationKey());
+//
+//		Response res = studentFacing.createPassword(passwordCreateObject);
+//
+//		String response = (String) res.getEntity();
+//
+//		Assert.assertEquals("Password Reset successfully" , response); 
+//
+//		studentLoginsDao.deleteStudentLogin("tomcat@gmail.com");
+//	}
 
 }
