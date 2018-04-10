@@ -263,12 +263,12 @@ public class StudentFacingService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateStudentRecord(@PathParam("nuId") String neuId, Students student) {
-		student.setNeuId(neuId);
-
 		if (!studentDao.ifNuidExists(neuId)) {
 			System.out.println("not found "+ neuId);
 			return Response.status(Response.Status.NOT_FOUND).entity(NUIDNOTFOUND).build();
 		}
+
+		student.setNeuId(neuId);
 
 		try{
 			studentDao.updateStudentRecord(student);
@@ -320,7 +320,9 @@ public class StudentFacingService {
 		}
 
 		try{
+			System.out.println("hjhjjhjk");
 			experiences = extraExperiencesDao.createExtraExperience(experiences);
+			System.out.println("after id = " + experiences.getExtraExperienceId()); 
 		}catch(Exception ex){
 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
@@ -630,7 +632,6 @@ public class StudentFacingService {
 		extraExperiences = extraExperiencesDao.getExtraExperienceById(extraExperienceId);
 
 		if(extraExperiences == null){
-
 			return Response.status(Response.Status.NOT_FOUND).entity("No Experience record exists with given ID").build();
 		}
 

@@ -41,11 +41,13 @@ public class ExtraExperiencesDao {
    */
   public ExtraExperiences getExtraExperienceById(int extraExperienceId) {
     try {
+    	System.out.println("iddd --------------" + extraExperienceId);
       session = factory.openSession();
       org.hibernate.query.Query query = session.createQuery(
               "FROM ExtraExperiences WHERE extraExperienceId = :extraExperienceId");
       query.setParameter("extraExperienceId", extraExperienceId);
       List<ExtraExperiences> listOfExtraExperience = query.list();
+      System.out.println("list size = " + listOfExtraExperience.size());
       if (listOfExtraExperience.isEmpty())
         return null;
       return listOfExtraExperience.get(0);
