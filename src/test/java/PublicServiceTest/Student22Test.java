@@ -1,6 +1,7 @@
 package PublicServiceTest;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -27,12 +28,15 @@ import org.mehaexample.asdDemo.enums.EnrollmentStatus;
 import org.mehaexample.asdDemo.enums.Gender;
 import org.mehaexample.asdDemo.enums.Term;
 import org.mehaexample.asdDemo.model.alignprivate.ExtraExperiences;
+import org.mehaexample.asdDemo.model.alignprivate.Projects;
 import org.mehaexample.asdDemo.model.alignprivate.StudentLogins;
 import org.mehaexample.asdDemo.model.alignprivate.Students;
+import org.mehaexample.asdDemo.model.alignprivate.WorkExperiences;
 import org.mehaexample.asdDemo.restModels.EmailToRegister;
 import org.mehaexample.asdDemo.restModels.ExtraExperienceObject;
 import org.mehaexample.asdDemo.restModels.PasswordChangeObject;
 import org.mehaexample.asdDemo.restModels.PasswordResetObject;
+import org.mehaexample.asdDemo.restModels.ProjectObject;
 
 import junit.framework.Assert;
 
@@ -96,11 +100,11 @@ public class Student22Test {
 		studentsDao.addStudent(newStudent3);
 
 		// Adding experience
-//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
-//		Date startdate = formatter.parse(STARTDATE);
-//		Date enddate = formatter.parse(ENDDATE);
-//		ExtraExperiences extraExperiences = new ExtraExperiences(NEUIDTEST, "companyName", startdate, 
-//				enddate, "title", "description"	);
+		//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+		//		Date startdate = formatter.parse(STARTDATE);
+		//		Date enddate = formatter.parse(ENDDATE);
+		//		ExtraExperiences extraExperiences = new ExtraExperiences(NEUIDTEST, "companyName", startdate, 
+		//				enddate, "title", "description"	);
 
 	}
 
@@ -146,35 +150,136 @@ public class Student22Test {
 	public void addExtraExperienceTest1(){
 		Students student = studentsDao.getStudentRecord(NEUIDTEST);
 		List<ExtraExperiences> extraExperiences =
-				  extraExperiencesDao.getExtraExperiencesByNeuId(NEUIDTEST);
-		
+				extraExperiencesDao.getExtraExperiencesByNeuId(NEUIDTEST);
+
 		ExtraExperienceObject extraExperiencesObject = new ExtraExperienceObject();
-		
+
 		Response resp = studentFacing.addExtraExperience("10", extraExperiencesObject);
-		
+
 		Assert.assertEquals("No Student record exists with given ID", resp.getEntity().toString());
 	}
-	
+
 	@Test
 	public void addExtraExperienceTest2(){
-//		Students student = studentsDao.getStudentRecord(NEUIDTEST);
-//		List<ExtraExperiences> extraExperiences =
-//				  extraExperiencesDao.getExtraExperiencesByNeuId(NEUIDTEST);
-		
 		String endDate = "2017-01-04";
 		String startDate = "2018-01-04";
 		ExtraExperienceObject extraExperiencesObject = 
 				new ExtraExperienceObject(111, NEUIDTEST, "companyName", startDate, 
 						endDate, "title", "description");
-		
+
 		Response resp = studentFacing.addExtraExperience(NEUIDTEST, extraExperiencesObject);
 		System.out.println("extra id" + extraExperiencesObject.getExtraExperienceId());
-		
+
 		Assert.assertEquals(200, resp.getStatus());
-		
+
 		int experirnceId = Integer.parseInt(resp.getEntity().toString());
 		Response resp2 = studentFacing.deleteExtraExperience(NEUIDTEST, experirnceId);
 		Assert.assertEquals("Experience deleted successfully", resp2.getEntity().toString());
+	}
+
+	@Test
+	public void addProjectTest1(){
+		Students student = studentsDao.getStudentRecord(NEUIDTEST);
+		List<Projects> projects =
+				projectsDao.getProjectsByNeuId(NEUIDTEST);
+
+		ProjectObject projectObject = new ProjectObject();
+
+		Response resp = studentFacing.addProject("10", projectObject);
+
+
+		Assert.assertEquals("No Student record exists with given ID", resp.getEntity().toString());
+	}
+	
+//	@Test
+//	public void updateProject1(){
+//		String endDate = "2017-01-04";
+//		String startDate = "2018-01-04";
+//
+//		ProjectObject projectObject = new ProjectObject(10, NEUIDTEST, "Student Website", "2018-01-01",
+//				"2019-01-01", "description");
+//
+//		Response resp = studentFacing.addProject(NEUIDTEST, projectObject);
+//
+//		Assert.assertEquals(200, resp.getStatus());
+//		
+//		ProjectObject projectNew = new ProjectObject();
+//		projectNew.setDescription("d2");
+//		
+//		int projectId = Integer.parseInt(resp.getEntity().toString()); 
+//		Response respUpdate = studentFacing.updateProject(NEUIDTEST, projectId, projectNew);
+//
+//		Assert.assertEquals(200, respUpdate.getStatus());
+//		Assert.assertEquals(projectObject.getDescription(), projectNew.getDescription());
+//
+//		Response resp2 = studentFacing.deleteProject(NEUIDTEST, projectId);
+//		Assert.assertEquals("Project deleted successfully", resp2.getEntity().toString());
+//	}
+
+	@Test
+	public void addProjectTest2(){
+		String endDate = "2017-01-04";
+		String startDate = "2018-01-04";
+
+		ProjectObject projectObject = new ProjectObject(10, NEUIDTEST, "Student Website", "2018-01-01",
+				"2019-01-01", "description");
+
+		Response resp = studentFacing.addProject(NEUIDTEST, projectObject);
+
+		Assert.assertEquals(200, resp.getStatus());
+
+		int projectId = Integer.parseInt(resp.getEntity().toString());
+		Response resp2 = studentFacing.deleteProject(NEUIDTEST, projectId);
+		Assert.assertEquals("Project deleted successfully", resp2.getEntity().toString());
+	}
+
+	@Test
+	public void getStudentExtraExperience1(){
+		String endDate = "2017-01-04";
+		String startDate = "2018-01-04";
+		ExtraExperienceObject extraExperiencesObject = 
+				new ExtraExperienceObject(111, NEUIDTEST, "companyName", startDate, 
+						endDate, "title", "description");
+
+		Response resp = studentFacing.addExtraExperience(NEUIDTEST, extraExperiencesObject);
+		Response getResp = studentFacing.getStudentExtraExperience(NEUIDTEST);
+
+		Assert.assertEquals(200, getResp.getStatus());
+
+		int experirnceId = Integer.parseInt(resp.getEntity().toString());
+		Response resp2 = studentFacing.deleteExtraExperience(NEUIDTEST, experirnceId);
+		Assert.assertEquals("Experience deleted successfully", resp2.getEntity().toString());
+	}
+
+	@Test
+	public void getStudentWorkExperiences1(){
+		WorkExperiences newWorkExperience = new WorkExperiences();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			newWorkExperience.setStartDate(dateFormat.parse("2017-06-01"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			newWorkExperience.setEndDate(dateFormat.parse("2017-12-01"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		newWorkExperience.setCurrentJob(false);
+		newWorkExperience.setCoop(true);
+		newWorkExperience.setTitle("Title");
+		newWorkExperience.setDescription("Description");
+		newWorkExperience.setNeuId(NEUIDTEST);
+		newWorkExperience.setCompanyName("Amazon");
+		workExperiencesDao.createWorkExperience(newWorkExperience);
+
+		Response response = studentFacing.getStudentWorkExperiences(NEUIDTEST);
+
+		Assert.assertEquals(200, response.getStatus());
+
+		workExperiencesDao.deleteWorkExperienceByNeuId(NEUIDTEST);
 	}
 
 	@Test
