@@ -8,14 +8,35 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mehaexample.asdDemo.alignWebsite.PublicFacing;
+import org.mehaexample.asdDemo.alignWebsite.StudentFacingService;
+import org.mehaexample.asdDemo.dao.alignprivate.CoursesDao;
+import org.mehaexample.asdDemo.dao.alignprivate.ElectivesDao;
+import org.mehaexample.asdDemo.dao.alignprivate.PrivaciesDao;
+import org.mehaexample.asdDemo.dao.alignprivate.ProjectsDao;
+import org.mehaexample.asdDemo.dao.alignprivate.StudentsDao;
+import org.mehaexample.asdDemo.dao.alignprivate.WorkExperiencesDao;
 import org.mehaexample.asdDemo.dao.alignpublic.StudentsPublicDao;
 import org.mehaexample.asdDemo.dao.alignpublic.UndergraduatesPublicDao;
 import org.mehaexample.asdDemo.dao.alignpublic.WorkExperiencesPublicDao;
+import org.mehaexample.asdDemo.enums.Campus;
+import org.mehaexample.asdDemo.enums.DegreeCandidacy;
+import org.mehaexample.asdDemo.enums.EnrollmentStatus;
+import org.mehaexample.asdDemo.enums.Gender;
+import org.mehaexample.asdDemo.enums.Term;
+import org.mehaexample.asdDemo.model.alignprivate.ExtraExperiences;
+import org.mehaexample.asdDemo.model.alignprivate.Privacies;
+import org.mehaexample.asdDemo.model.alignprivate.Projects;
+import org.mehaexample.asdDemo.model.alignprivate.Students;
+import org.mehaexample.asdDemo.model.alignprivate.WorkExperiences;
 import org.mehaexample.asdDemo.model.alignpublic.*;
 import org.mehaexample.asdDemo.restModels.TopUnderGradSchools;
 
 import javax.ws.rs.core.Response;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class serviceTest {
@@ -25,6 +46,17 @@ public class serviceTest {
     public static UndergraduatesPublicDao undergraduatesPublicDao;
     public static WorkExperiencesPublicDao workExperiencesPublicDao;
 
+	private static String NEUIDTEST = "0000000";
+	private static String ENDDATE = "2017-01-04";
+	private static String STARTDATE = "2018-01-04";
+
+	private static StudentFacingService studentFacing;
+	private static StudentsDao studentsDao;
+	private static ElectivesDao electivesDao;
+	private static CoursesDao coursesDao;
+	private static WorkExperiencesDao workExperiencesDao;
+	private static PrivaciesDao privaciesDao;
+	private static ProjectsDao projectsDao;
 
     @BeforeClass
     public static void init() {
@@ -32,6 +64,15 @@ public class serviceTest {
         studentsPublicDao = new StudentsPublicDao();
         undergraduatesPublicDao = new UndergraduatesPublicDao();
         workExperiencesPublicDao = new WorkExperiencesPublicDao();
+    	studentsDao = new StudentsDao();
+		studentFacing = new StudentFacingService();
+		electivesDao = new ElectivesDao();
+		coursesDao = new CoursesDao();
+		workExperiencesDao = new WorkExperiencesDao();
+		studentsDao = new StudentsDao();
+		privaciesDao = new PrivaciesDao();
+		projectsDao = new ProjectsDao(true);
+		System.out.println("jqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
     }
 
     @Before
@@ -76,6 +117,102 @@ public class serviceTest {
         workExperiencesPublicDao.createWorkExperience(workExperiencesPublic3);
         workExperiencesPublicDao.createWorkExperience(workExperiencesPublic4);
         workExperiencesPublicDao.createWorkExperience(workExperiencesPublic5);
+        
+        
+    	Students newStudent = new Students("0000000", "tomcat@gmail.com", "Tom", "",
+				"Cat", Gender.M, "F1", "1111111111",
+				"401 Terry Ave", "WA", "Seattle", "98109", Term.FALL, 2015,
+				Term.SPRING, 2017,
+				EnrollmentStatus.FULL_TIME, Campus.SEATTLE, DegreeCandidacy.MASTERS, null, true);
+		Students newStudent2 = new Students("1111111", "jerrymouse@gmail.com", "Jerry", "",
+				"Mouse", Gender.F, "F1", "1111111111",
+				"225 Terry Ave", "MA", "Seattle", "98109", Term.FALL, 2014,
+				Term.SPRING, 2016,
+				EnrollmentStatus.PART_TIME, Campus.BOSTON, DegreeCandidacy.MASTERS, null, true);
+		Students newStudent3 = new Students("2222222", "tomcat3@gmail.com", "Tom", "",
+				"Dog", Gender.M, "F1", "1111111111",
+				"401 Terry Ave", "WA", "Seattle", "98109", Term.FALL, 2015,
+				Term.FALL, 2017,
+				EnrollmentStatus.DROPPED_OUT, Campus.CHARLOTTE, DegreeCandidacy.MASTERS, null, true);
+
+		newStudent.setScholarship(true);
+		newStudent.setRace("White");
+		newStudent2.setRace("Black");
+		newStudent3.setRace("White");
+
+		studentsDao.addStudent(newStudent);
+		studentsDao.addStudent(newStudent2);
+		studentsDao.addStudent(newStudent3);
+
+		// Adding experience
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+		Date startdate = null;
+		try {
+			startdate = formatter.parse(STARTDATE);
+		} catch (ParseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		Date enddate = null;
+		try {
+			enddate = formatter.parse(ENDDATE);
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		ExtraExperiences extraExperiences = new ExtraExperiences(NEUIDTEST, "companyName", startdate, 
+				enddate, "title", "description"	);
+
+//		studentFacing.addExtraExperience(NEUIDTEST, extraExperiences);
+
+		// Add courses
+		//		Courses newCourse = new Courses("100", "course2", "course description 2");
+		//		Electives elective = new Electives();
+		//		elective.setNeuId(NEUIDTEST);
+		//		elective.setElectiveId(100);
+		//		elective.setCourseId(newCourse.getCourseId());
+		//
+		//		coursesDao.createCourse(newCourse);
+		//		electivesDao.addElective(elective);
+
+		Privacies privacy = new Privacies();
+		privacy.setNeuId(NEUIDTEST);
+		privacy.setPublicId(studentsDao.getStudentRecord(NEUIDTEST).getPublicId());
+		privacy.setCoop(true);
+		privaciesDao.createPrivacy(privacy);
+
+		WorkExperiences newWorkExperience = new WorkExperiences();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			newWorkExperience.setStartDate(dateFormat.parse("2017-06-01"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			newWorkExperience.setEndDate(dateFormat.parse("2017-12-01"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		newWorkExperience.setCurrentJob(false);
+		newWorkExperience.setCoop(true);
+		newWorkExperience.setTitle("Title");
+		newWorkExperience.setDescription("Description");
+		newWorkExperience.setNeuId(NEUIDTEST);
+		newWorkExperience.setCompanyName("Amazon");
+		workExperiencesDao.createWorkExperience(newWorkExperience);
+
+		SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+		Projects project = null;
+		try {
+			project = new Projects(NEUIDTEST, "Student Website", dateFormat2.parse("2018-01-01"),
+					dateFormat2.parse("2018-04-01"), "My Project");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		projectsDao.createProject(project);
 
     }
 
@@ -86,6 +223,18 @@ public class serviceTest {
         studentsPublicDao.deleteStudentByPublicId(23);
         studentsPublicDao.deleteStudentByPublicId(24);
     }
+
+    @SuppressWarnings("unchecked")
+	@Test
+	public void updateStudentRecordTest(){
+		Students students = studentsDao.getStudentRecord(NEUIDTEST);
+		students.setCity("BOSTON");
+
+		studentFacing.updateStudentRecord(NEUIDTEST, students);
+		students = studentsDao.getStudentRecord(NEUIDTEST);
+
+		Assert.assertEquals(students.getCity(), "BOSTON");
+	}
 
     @SuppressWarnings("unchecked")
     @Test
