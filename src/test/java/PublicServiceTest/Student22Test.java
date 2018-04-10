@@ -27,6 +27,7 @@ import org.mehaexample.asdDemo.enums.DegreeCandidacy;
 import org.mehaexample.asdDemo.enums.EnrollmentStatus;
 import org.mehaexample.asdDemo.enums.Gender;
 import org.mehaexample.asdDemo.enums.Term;
+import org.mehaexample.asdDemo.model.alignadmin.LoginObject;
 import org.mehaexample.asdDemo.model.alignprivate.ExtraExperiences;
 import org.mehaexample.asdDemo.model.alignprivate.Projects;
 import org.mehaexample.asdDemo.model.alignprivate.StudentLogins;
@@ -134,6 +135,14 @@ public class Student22Test {
 		studentsDao.getStudentRecord(NEUIDTEST);
 
 		Assert.assertEquals("No Student record exists with given ID", response.getEntity().toString());
+	}
+	
+	@Test
+	public void loginUser1(){
+		LoginObject loginObject = new LoginObject("test.alignstudent123@gmail.com", "mangograpes123");
+		Response  response = studentFacing.loginUser(null, loginObject);
+		
+		Assert.assertEquals(response.getEntity().toString(), "User doesn't exist: test.alignstudent123@gmail.com");
 	}
 
 	@Test
