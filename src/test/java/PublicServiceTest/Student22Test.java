@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class serviceTest2 {
+public class Student22Test {
 	
 	public static PublicFacing publicFacing;
     public static StudentsPublicDao studentsPublicDao;
